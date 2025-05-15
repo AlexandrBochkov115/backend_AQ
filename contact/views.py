@@ -1,21 +1,12 @@
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.generics import CreateAPIView
 from .models import Contact
 from .serializers import ContactSerializer
 
+class ContactCreateView(CreateAPIView):
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
 
-@api_view(['POST'])
-def create_contact(request):
-    if request.method == 'POST':
-        serializer = ContactSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'success': True, 'message': 'Контакт успешно добавлен'}, status=status.HTTP_201_CREATED)
-
-        # Добавим вывод ошибок
-        return Response({
-            'success': False,
-            'message': 'Ошибка при добавлении контакта',
-            'errors': serializer.errors
-        }, status=status.HTTP_400_BAD_REQUEST)
+    def perform_create(self, serializer):
+        print("===> Contact data:", serializer.validated_data)  # вывод данных в консоль
+        contact = serializer.save()
+        print("===> Contact saved:", contact)
