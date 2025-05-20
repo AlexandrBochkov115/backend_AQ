@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'terms',
     'project',
     'catalog',
+    'django_filters',
 
 ]
 
