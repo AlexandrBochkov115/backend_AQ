@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'project',
     'catalog',
     'django_filters',
+    'drf_yasg',
 
 ]
 
