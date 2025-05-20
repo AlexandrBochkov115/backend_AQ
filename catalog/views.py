@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, filters
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .models import Category, Product
@@ -32,11 +32,9 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     lookup_url_kwarg = 'product_slug'  # Как называется параметр в URL
 
     def get_object(self):
-        # Получаем slug категории и продукта из URL
         category_slug = self.kwargs['category_slug']
         product_slug = self.kwargs['product_slug']
 
-        # Ищем продукт в указанной категории
         return get_object_or_404(
             Product,
             category__slug=category_slug,
@@ -44,7 +42,23 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
         )
 
     def get_queryset(self):
-        """Базовый queryset для проверки прав доступа"""
         category_slug = self.kwargs.get('category_slug')
         category = get_object_or_404(Category, slug=category_slug)
         return Product.objects.filter(category=category)
+
+
+# Новый класс для поиска товаров по названию (name)
+
+class ProductSearchView(generics.ListAPIView):
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        query = self.request.query_params.get('search', '')
+        if not query:
+            return Product.objects.none()
+
+        words = query.split()
+        qs = Product.objects.all()
+        for word in words:
+            qs = qs.filter(name__icontains=word)
+        return qs
