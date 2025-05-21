@@ -12,6 +12,3 @@ class ContactAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
-    # Если хочешь запретить удаление, добавь (необязательно)
-    # def has_delete_permission(self, request, obj=None):
-    #     return False
