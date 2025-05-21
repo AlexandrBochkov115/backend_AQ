@@ -5,7 +5,7 @@ class Project(models.Model):
     title = models.CharField("Название проекта", max_length=200)
     address = models.CharField("Адрес", max_length=255)
     description = models.TextField("Описание")
-    image = models.ImageField("Изображение", upload_to='projects/')
+    image = models.ImageField("Изображение", upload_to='project/projects/')
     is_flipped = models.BooleanField("Перевёрнут", default=False)
 
     def __str__(self):

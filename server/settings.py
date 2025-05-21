@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'catalog',
     'django_filters',
     'drf_yasg',
+    'contact',
 
 ]
 REST_FRAMEWORK = {
