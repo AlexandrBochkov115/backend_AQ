@@ -50,9 +50,18 @@ class SpecificationSerializer(serializers.ModelSerializer):
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
     class Meta:
         model = ProductImage
-        fields = ['id', 'image']
+        fields = ['id', 'image', 'image_url']
+
+    def get_image_url(self, obj):
+        if obj.image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+        return None
 
     def validate_image(self, value):
         if not value:
@@ -79,19 +88,35 @@ class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, required=False)
     specifications = SpecificationSerializer(many=True, required=False)
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
+    image_url = serializers.SerializerMethodField()
+    image_second_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = [
-            'id', 'category', 'name', 'slug', 'image', 'image_second', 'popularity',
+            'id', 'category', 'name', 'slug', 'image', 'image_second', 'image_url', 'image_second_url', 'popularity',
             'reliability_text', 'special_notes', 'images', 'specifications'
         ]
-        read_only_fields = ['slug']
+        read_only_fields = ['slug', 'image_url', 'image_second_url']
         extra_kwargs = {
             'image': {'required': True},
             'image_second': {'required': False},
             'category': {'required': True}
         }
+
+    def get_image_url(self, obj):
+        if obj.image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+        return None
+
+    def get_image_second_url(self, obj):
+        if obj.image_second:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image_second.url)
+        return None
 
     def validate_name(self, value):
         if not value.strip():

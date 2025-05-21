@@ -11,7 +11,9 @@ class PoolImageSerializer(serializers.ModelSerializer):
 
     def get_image_url(self, obj):
         if obj.image:
-            return obj.image.url
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image.url)
         return None
 
 
@@ -24,7 +26,9 @@ class PoolListSerializer(serializers.ModelSerializer):
 
     def get_main_image_url(self, obj):
         if obj.main_image:
-            return obj.main_image.url
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.main_image.url)
         return None
 
 
@@ -47,5 +51,7 @@ class PoolDetailSerializer(serializers.ModelSerializer):
 
     def get_main_image_url(self, obj):
         if obj.main_image:
-            return obj.main_image.url
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.main_image.url)
         return None
