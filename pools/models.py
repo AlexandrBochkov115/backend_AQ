@@ -16,7 +16,7 @@ class Pool(models.Model):
 
 class PoolImage(models.Model):
     pool = models.ForeignKey(Pool, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='pools/gallery/')
+    image = models.ImageField(upload_to='pools/')
 
     def __str__(self):
         return f"Изображение для {self.pool.name}"

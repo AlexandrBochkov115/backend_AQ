@@ -20,8 +20,8 @@ class Product(models.Model):
     slug = models.SlugField(unique=True)
     reliability_text = models.TextField()
     special_notes = models.TextField()
-    image = models.ImageField(upload_to='catalog/products/')
-    image_second = models.ImageField(upload_to='catalog/products/', blank=True, null=True)
+    image = models.ImageField(upload_to='products/')
+    image_second = models.ImageField(upload_to='products/', blank=True, null=True)
     popularity = models.PositiveIntegerField(choices=POPULARITY_CHOICES, default=1)
 
     def __str__(self):
@@ -30,7 +30,7 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='catalog/product_images/')
+    image = models.ImageField(upload_to='products/')
 
 
 class Specification(models.Model):
