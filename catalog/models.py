@@ -1,48 +1,39 @@
 from django.db import models
-from django.utils.text import slugify
 
 class Category(models.Model):
-    name = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True, blank=True)
-    order = models.PositiveIntegerField(default=0)
-
-    class Meta:
-        ordering = ['order']
+    name = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(unique=True)
 
     def __str__(self):
         return self.name
 
 
 class Product(models.Model):
-    category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True, blank=True)
-    image = models.ImageField(upload_to='products/%Y/%m/%d/', blank=True)
-    image_second = models.ImageField(upload_to='products/%Y/%m/%d/', blank=True)  # Новое поле
-    popularity = models.PositiveIntegerField(default=0)
-    reliability_text = models.TextField(blank=True)
-    special_notes = models.TextField(blank=True)
+    POPULARITY_CHOICES = [
+        (0, 'Низкая'),
+        (1, 'Средняя'),
+        (2, 'Высокая'),
+    ]
+
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True)
+    reliability_text = models.TextField()
+    special_notes = models.TextField()
+    image = models.ImageField(upload_to='products/')
+    image_second = models.ImageField(upload_to='products/', blank=True, null=True)
+    popularity = models.PositiveIntegerField(choices=POPULARITY_CHOICES, default=1)
 
     def __str__(self):
         return self.name
 
-    def __str__(self):
-        return f"{self.category.name} - {self.name}"
 
 class ProductImage(models.Model):
-    product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='products/%Y/%m/%d/')
-    order = models.PositiveIntegerField(default=0)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='product_images/')
 
-    class Meta:
-        ordering = ['order']
 
 class Specification(models.Model):
-    product = models.ForeignKey(Product, related_name='specifications', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='specifications')
     key = models.CharField(max_length=100)
     value = models.CharField(max_length=100)
-    order = models.PositiveIntegerField(default=0)
-
-    class Meta:
-        ordering = ['order']
-        unique_together = [['product', 'key']]

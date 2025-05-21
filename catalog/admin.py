@@ -10,16 +10,12 @@ MAX_IMAGES = 6
 MIN_IMAGES = 3
 MAX_SPECS = 2
 
-
-# === CATEGORY ADMIN ===
-
 class CategoryForm(ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         if Category.objects.count() >= MAX_CATEGORIES and not self.instance.pk:
             raise ValidationError(f"Можно создать максимум {MAX_CATEGORIES} категорий!")
         return cleaned_data
-
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -30,9 +26,6 @@ class CategoryAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return Category.objects.count() < MAX_CATEGORIES
-
-
-# === PRODUCT IMAGE INLINE ===
 
 class ProductImageFormSet(BaseInlineFormSet):
     def clean(self):
@@ -54,7 +47,6 @@ class ProductImageFormSet(BaseInlineFormSet):
                 if not form.cleaned_data.get('image'):
                     raise ValidationError("Все изображения должны быть заполнены.")
 
-
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
     formset = ProductImageFormSet
@@ -70,9 +62,6 @@ class ProductImageInline(admin.TabularInline):
 
     image_preview.short_description = "Превью"
 
-
-# === SPECIFICATION INLINE ===
-
 class SpecificationFormSet(BaseInlineFormSet):
     def clean(self):
         super().clean()
@@ -87,7 +76,6 @@ class SpecificationFormSet(BaseInlineFormSet):
             if not form.cleaned_data.get('key') or not form.cleaned_data.get('value'):
                 raise ValidationError("Все характеристики должны быть заполнены.")
 
-
 class SpecificationInline(admin.TabularInline):
     model = Specification
     formset = SpecificationFormSet
@@ -101,9 +89,6 @@ class SpecificationInline(admin.TabularInline):
             self.extra = 0
         return super().get_formset(request, obj, **kwargs)
 
-
-# === PRODUCT ADMIN ===
-
 class ProductForm(ModelForm):
     def clean(self):
         cleaned_data = super().clean()
@@ -113,19 +98,18 @@ class ProductForm(ModelForm):
                 raise ValidationError(f"Поле '{field}' обязательно для заполнения.")
         return cleaned_data
 
-
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'slug', 'main_image_preview', 'second_image_preview')
+    list_display = ('name', 'category', 'slug', 'main_image_preview', 'second_image_preview', 'popularity')
     prepopulated_fields = {"slug": ("name",)}
     inlines = [SpecificationInline, ProductImageInline]
     readonly_fields = ('main_image_preview', 'second_image_preview')
-    list_filter = ('category',)
+    list_filter = ('category', 'popularity')
     search_fields = ('name', 'category__name')
     form = ProductForm
     fieldsets = (
         (None, {
-            'fields': ('category', 'name', 'slug', 'reliability_text', 'special_notes')
+            'fields': ('category', 'name', 'slug', 'popularity', 'reliability_text', 'special_notes')
         }),
         ('Изображения продукта', {
             'fields': (

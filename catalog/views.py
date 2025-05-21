@@ -17,7 +17,23 @@ class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get(self, request, *args, **kwargs):
         category = self.get_object()
+        search_query = request.query_params.get('search', '').strip()
+
         products = category.products.all()
+
+        if search_query:
+            words = search_query.split()
+            for word in words:
+                products = products.filter(name__icontains=word)
+
+        # Можно добавить сортировку по параметру ordering
+        ordering = request.query_params.get('ordering')
+        allowed_ordering = ['popularity', '-popularity', 'name', '-name']
+        if ordering in allowed_ordering:
+            products = products.order_by(ordering)
+        else:
+            products = products.order_by('popularity', 'name')
+
         products_serializer = ProductSerializer(products, many=True, context={'request': request})
         category_serializer = self.get_serializer(category)
 
@@ -28,8 +44,8 @@ class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProductSerializer
-    lookup_field = 'slug'  # По какому полю ищем продукт
-    lookup_url_kwarg = 'product_slug'  # Как называется параметр в URL
+    lookup_field = 'slug'         # по какому полю ищем продукт
+    lookup_url_kwarg = 'product_slug'  # параметр из URL
 
     def get_object(self):
         category_slug = self.kwargs['category_slug']
@@ -47,18 +63,28 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
         return Product.objects.filter(category=category)
 
 
-# Новый класс для поиска товаров по названию (name)
-
 class ProductSearchView(generics.ListAPIView):
     serializer_class = ProductSerializer
 
     def get_queryset(self):
         query = self.request.query_params.get('search', '')
+        qs = Product.objects.all()
+
         if not query:
-            return Product.objects.none()
+            return qs  # Можно возвращать все продукты, или none() — по желанию
 
         words = query.split()
-        qs = Product.objects.all()
         for word in words:
             qs = qs.filter(name__icontains=word)
+
+        # Добавим сортировку по параметру ordering из query params
+        ordering = self.request.query_params.get('ordering', '')
+        allowed_ordering = ['popularity', '-popularity', 'name', '-name']
+
+        if ordering in allowed_ordering:
+            qs = qs.order_by(ordering)
+        else:
+            # дефолтная сортировка
+            qs = qs.order_by('popularity', 'name')
+
         return qs
