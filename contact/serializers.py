@@ -3,25 +3,28 @@ from .models import Contact
 import phonenumbers
 
 class ContactSerializer(serializers.ModelSerializer):
+    fullName = serializers.CharField(source='full_name', max_length=150)
+    phone = serializers.CharField(source='phone_number', max_length=20)
+    poolSlug = serializers.SlugField(source='pool_slug', max_length=100, required=False, allow_null=True)
+    poolName = serializers.CharField(source='pool_name', max_length=200, required=False, allow_null=True)
+
     class Meta:
         model = Contact
-        fields = ['id', 'full_name', 'phone_number', 'created_at']
+        fields = ['id', 'fullName', 'phone', 'poolSlug', 'poolName', 'created_at']
         read_only_fields = ['id', 'created_at']
 
-    def validate_full_name(self, value):
+    def validate_fullName(self, value):
         if not value.strip():
             raise serializers.ValidationError("ФИО не может быть пустым.")
         if len(value) > 150:
             raise serializers.ValidationError("ФИО слишком длинное (максимум 150 символов).")
         return value
 
-    def validate_phone_number(self, value):
-        try:
-            # Парсим номер с указанием региона России
-            phone_obj = phonenumbers.parse(value, "RU")
-            if not phonenumbers.is_valid_number(phone_obj):
-                raise serializers.ValidationError("Номер телефона недействителен.")
-            # Нормализуем в формат +7XXXXXXXXXX
-            return phonenumbers.format_number(phone_obj, phonenumbers.PhoneNumberFormat.E164)
-        except phonenumbers.NumberParseException:
-            raise serializers.ValidationError("Неверный формат номера телефона.")
+    def validate_phone(self, value):
+        # Удаляем все символы кроме цифр, +, -, скобок и пробелов
+        cleaned = ''.join(c for c in value if c.isdigit() or c in '+-() ')
+        # Проверяем количество цифр
+        digits = ''.join(c for c in cleaned if c.isdigit())
+        if len(digits) < 10:
+            raise serializers.ValidationError("Номер телефона должен содержать минимум 10 цифр.")
+        return cleaned

@@ -27,6 +27,8 @@ urlpatterns = [
     path('api/project/', include('project.urls')),
     path('api/catalog/', include('catalog.urls')),
     path('api/pools/', include('pools.urls')),
+    path('api/terms/', include('terms.urls')),
+    path('api/contact/', include('contact.urls')),
 
     # Swagger и ReDoc — добавляем в конец списка urlpatterns
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
