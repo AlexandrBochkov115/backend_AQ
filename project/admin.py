@@ -11,8 +11,10 @@ class ProjectDetailForm(ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        # Проверяем, что все поля заполнены
+        # Проверяем, что все поля заполнены, кроме id
         for field_name, field_value in cleaned_data.items():
+            if field_name == 'id':
+                continue
             if field_value in (None, ''):
                 raise ValidationError(f"Поле {field_name} обязательно для заполнения")
         return cleaned_data

@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-!1bjdp6^8lt+(fmk%w^)=jj9r(22s9$!6*_-@g-=9+m76-!tsd')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False  # В продакшне всегда должно быть False
+DEBUG = True  # В продакшне всегда должно быть False
 
 # Настройки для защиты от XSS
 SECURE_BROWSER_XSS_FILTER = True
