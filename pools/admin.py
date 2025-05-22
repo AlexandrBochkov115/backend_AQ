@@ -38,13 +38,13 @@ class PoolDescriptionInline(admin.StackedInline):
     model = PoolDescription
     extra = 0
     max_num = 1
-    min_num = 1  # Обязательно должно быть одно описание
-    validate_min = True  # Включаем валидацию минимального количества
+    min_num = 1
+    validate_min = True
     fields = ('description',)
 
     def get_formset(self, request, obj=None, **kwargs):
         formset = super().get_formset(request, obj, **kwargs)
-        formset.form.base_fields['description'].required = True  # Делаем поле обязательным
+        formset.form.base_fields['description'].required = True
         return formset
 
 
