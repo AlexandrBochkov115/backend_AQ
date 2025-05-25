@@ -130,11 +130,11 @@ class ProductSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, data):
-        # Автоматически создаём slug из имени, если его нет
+        
         if 'name' in data and not data.get('slug'):
             data['slug'] = slugify(data['name'])
 
-        # Проверяем уникальность slug в рамках категории
+        
         if 'slug' in data and 'category' in data:
             queryset = Product.objects.filter(slug=data['slug'], category=data['category'])
             if self.instance:

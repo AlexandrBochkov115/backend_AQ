@@ -35,8 +35,6 @@ ALLOWED_HOSTS = [
     'www.aquadreams-rostov.ru',
     'aquadreams-rostov.store',
     'www.aquadreams-rostov.store',
-    'sashabs8.beget.tech',
-    'www.sashabs8.beget.tech',
 ]
 
 
