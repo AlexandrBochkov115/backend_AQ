@@ -55,7 +55,14 @@ pip install Pillow
 pip install python-dotenv
 pip install pymysql
 pip install django-extensions werkzeug
+
+
 ```
+### Самоподисанный сертификат 
+```bash
+pip install pyOpenSSL
+```
+
 
 Если у вас возникнут проблемы с установкой, убедитесь, что у вас установлены все необходимые системные зависимости для работы с MySQL и другими библиотеками.
 

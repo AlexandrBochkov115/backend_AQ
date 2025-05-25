@@ -6,6 +6,8 @@ from drf_yasg import openapi
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.static import serve  # Добавляем для продакшена
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -21,17 +23,15 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-
-    # Здесь лучше объединить в один include, если это одно приложение,
-    # иначе указывай уникальные префиксы, чтобы не конфликтовали
+    path(settings.ADMIN_URL, admin.site.urls),  
+    
     path('api/project/', include('project.urls')),
     path('api/catalog/', include('catalog.urls')),
     path('api/pools/', include('pools.urls')),
     path('api/terms/', include('terms.urls')),
     path('api/contact/', include('contact.urls')),
 
-    # Swagger и ReDoc — добавляем в конец списка urlpatterns
+    
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
@@ -51,12 +51,12 @@ else:
     print("STATIC_ROOT:", settings.STATIC_ROOT)
     print("STATIC_URL:", settings.STATIC_URL)
     print("Current urlpatterns:", urlpatterns)
-    # Добавляем обработку статических файлов даже в production для отладки
+    
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     print("Added static files handling")
     print("Updated urlpatterns:", urlpatterns)
 
-    # Для продакшена на Beget
+    
     urlpatterns += [
         re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
         re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),

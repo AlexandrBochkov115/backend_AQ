@@ -16,14 +16,15 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
 
-# HTTPS settings
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
-SECURE_SSL_REDIRECT = False
+
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
 SECURE_HSTS_SECONDS = 31536000  # 1 год
-SECURE_HSTS_INCLUDE_SUBDOMAINS = False
-SECURE_HSTS_PRELOAD = False
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
 
 
 ALLOWED_HOSTS = [
@@ -33,7 +34,7 @@ ALLOWED_HOSTS = [
     
 ]
 
-# Application definition
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -62,10 +63,10 @@ REST_FRAMEWORK = {
         'rest_framework.filters.OrderingFilter',
     ],
     'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',  # Отключаем Browsable API в продакшне
+        'rest_framework.renderers.JSONRenderer',  
     ),
     'DEFAULT_PARSER_CLASSES': (
-        'rest_framework.parsers.JSONParser',  # Разрешаем только JSON
+        'rest_framework.parsers.JSONParser',  
     ),
 }
 
@@ -74,19 +75,19 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',  # Защита от CSRF
+    'django.middleware.csrf.CsrfViewMiddleware',  
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',  # Защита от clickjacking
-    'django.middleware.security.SecurityMiddleware',  # Дополнительные заголовки безопасности
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',  
+    'django.middleware.security.SecurityMiddleware',  
 ]
 
-# Настройки CORS - будьте осторожны в продакшне
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://localhost:3000",  # для HTTPS
+    "https://localhost:3000",  
 ]
-CORS_ALLOW_ALL_ORIGINS = False  # В продакшне должно быть False
+CORS_ALLOW_ALL_ORIGINS = False  
 
 ROOT_URLCONF = 'server.urls'
 
@@ -102,7 +103,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-            # Автоматическое экранирование для защиты от XSS
+            
             'autoescape': True,
         },
     },
@@ -110,8 +111,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'server.wsgi.application'
 
-# Database
-# Используйте параметризованные запросы для защиты от SQL-инъекций
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -121,13 +121,13 @@ DATABASES = {
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
         'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",  # Строгий режим MySQL
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",  
             'charset': 'utf8mb4',
         },
     }
 }
 
-# Password validation
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -135,7 +135,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
         'OPTIONS': {
-            'min_length': 12,  # Рекомендуется минимум 12 символов
+            'min_length': 12,  #
         }
     },
     {
@@ -154,27 +154,27 @@ USE_TZ = True
 
 
 
-# Static files (CSS, JavaScript, Images)
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-# Настройки для поиска статических файлов
+
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
-# Отладочная информация для статических файлов
+
 if DEBUG:
     print("STATIC_ROOT:", STATIC_ROOT)
     print("STATIC_URL:", STATIC_URL)
     print("STATICFILES_DIRS:", STATICFILES_DIRS)
     print("BASE_DIR:", BASE_DIR)
 
-# Media files
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -205,3 +205,15 @@ if DEBUG:
             }
         }
     }
+
+
+ADMIN_URL = os.getenv('ADMIN_URL', 'sXXecuTTreaXdminpanel/')  
+ADMIN_SITE_HEADER = "Aqua Dreams Administration"
+ADMIN_SITE_TITLE = "Aqua Dreams Admin Portal"
+ADMIN_INDEX_TITLE = "Welcome to Aqua Dreams Admin"
+
+
+SESSION_COOKIE_AGE = 3600  
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
