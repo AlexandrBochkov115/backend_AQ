@@ -2,7 +2,7 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
-# Загрузка переменных окружения из .env файла
+
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,17 +21,22 @@ X_FRAME_OPTIONS = 'DENY'
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_SSL_REDIRECT = True
-SECURE_HSTS_SECONDS = 31536000  # 1 год
+SECURE_HSTS_SECONDS = 31536000 
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'aquadreams-rostov.ru',  
-    
+    'aquadreams-rostov.ru',
+    'www.aquadreams-rostov.ru',
+    'aquadreams-rostov.store',
+    'www.aquadreams-rostov.store',
+    'sashabs8.beget.tech',
+    'www.sashabs8.beget.tech',
 ]
 
 
