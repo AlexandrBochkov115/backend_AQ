@@ -7,6 +7,6 @@ class ContactCreateView(CreateAPIView):
     serializer_class = ContactSerializer
 
     def perform_create(self, serializer):
-        print("===> Contact data:", serializer.validated_data)  # вывод данных в консоль
+        print("===> Contact data:", serializer.validated_data)  
         contact = serializer.save()
         print("===> Contact saved:", contact)

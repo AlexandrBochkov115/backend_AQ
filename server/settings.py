@@ -1,22 +1,21 @@
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Загрузка переменных окружения из .env файла
+load_dotenv()
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
-# Рассмотрите использование переменных окружения для секретного ключа
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-!1bjdp6^8lt+(fmk%w^)=jj9r(22s9$!6*_-@g-=9+m76-!tsd')
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+DEBUG = True  # Временно включаем режим отладки для разработки
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True  # В продакшне всегда должно быть False
 
-# Настройки для защиты от XSS
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
-# Настройки HTTPS (активируются в продакшне)
+
 SESSION_COOKIE_SECURE = False  # Поставьте True при использовании HTTPS
 CSRF_COOKIE_SECURE = False    # Поставьте True при использовании HTTPS
 SECURE_SSL_REDIRECT = False   # Поставьте True при использовании HTTPS
@@ -111,11 +110,11 @@ WSGI_APPLICATION = 'server.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'aquadreams',
-        'USER': 'django_user',
-        'PASSWORD': '123456',  # Рассмотрите использование переменных окружения
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",  # Строгий режим MySQL
             'charset': 'utf8mb4',
@@ -143,23 +142,34 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Internationalization
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = 'ru-ru'
+TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
 USE_TZ = True
 
+
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+
+# Media files
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Default primary key field type
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Дополнительные заголовки безопасности
-SECURE_HSTS_SECONDS = 31536000  # 1 год - только для HTTPS
+
+SECURE_HSTS_SECONDS = 31536000  
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 

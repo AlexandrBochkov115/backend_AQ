@@ -11,7 +11,6 @@ class ProjectDetailForm(ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        # Проверяем, что все поля заполнены, кроме id
         for field_name, field_value in cleaned_data.items():
             if field_name == 'id':
                 continue
@@ -24,11 +23,11 @@ class ProjectDetailInline(admin.TabularInline):
     model = ProjectDetail
     form = ProjectDetailForm
     extra = 1
-    max_num = 6  # Ограничение на максимальное количество ProjectDetails
+    max_num = 6  
 
     def get_formset(self, request, obj=None, **kwargs):
         formset = super().get_formset(request, obj, **kwargs)
-        formset.validate_max = True  # Включаем валидацию максимального количества
+        formset.validate_max = True  
         return formset
 
 
@@ -38,7 +37,6 @@ class ProjectAdmin(admin.ModelAdmin):
     search_fields = ['title', 'address']
 
     def save_related(self, request, form, formsets, change):
-        # Проверка количества ProjectDetails перед сохранением
         for formset in formsets:
             if formset.model == ProjectDetail and len(formset.forms) > 6:
                 raise ValidationError("Нельзя добавить более 6 ProjectDetails")

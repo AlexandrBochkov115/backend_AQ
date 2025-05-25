@@ -8,7 +8,7 @@ from django.conf.urls.static import static
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="My Project API",
+      title="Aqua Dreams Documentation",
       default_version='v1',
       description="Описание API",
       terms_of_service="https://www.google.com/policies/terms/",

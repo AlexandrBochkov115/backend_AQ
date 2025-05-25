@@ -53,6 +53,7 @@ pip install drf-yasg
 pip install mysqlclient
 pip install Pillow
 pip install python-dotenv
+pip install pymysql
 ```
 
 Если у вас возникнут проблемы с установкой, убедитесь, что у вас установлены все необходимые системные зависимости для работы с MySQL и другими библиотеками.

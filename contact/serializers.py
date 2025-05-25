@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Contact
-import phonenumbers
+
 
 class ContactSerializer(serializers.ModelSerializer):
     fullName = serializers.CharField(source='full_name', max_length=150)
@@ -21,9 +21,7 @@ class ContactSerializer(serializers.ModelSerializer):
         return value
 
     def validate_phone(self, value):
-        # Удаляем все символы кроме цифр, +, -, скобок и пробелов
         cleaned = ''.join(c for c in value if c.isdigit() or c in '+-() ')
-        # Проверяем количество цифр
         digits = ''.join(c for c in cleaned if c.isdigit())
         if len(digits) < 10:
             raise serializers.ValidationError("Номер телефона должен содержать минимум 10 цифр.")
