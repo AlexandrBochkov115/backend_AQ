@@ -8,7 +8,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
-DEBUG = True  # Временно включаем режим отладки для разработки
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'  
 
 
 SECURE_BROWSER_XSS_FILTER = True
@@ -16,15 +16,21 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
 
-SESSION_COOKIE_SECURE = False  # Поставьте True при использовании HTTPS
-CSRF_COOKIE_SECURE = False    # Поставьте True при использовании HTTPS
-SECURE_SSL_REDIRECT = False   # Поставьте True при использовании HTTPS
+# HTTPS settings
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+SECURE_SSL_REDIRECT = False
+SECURE_HSTS_SECONDS = 31536000  # 1 год
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+SECURE_HSTS_PRELOAD = False
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# Список доверенных хостов для защиты от подделки заголовков Host
+
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    # Добавьте ваши домены для продакшна
+    'aquadreams-rostov.ru',  
+    
 ]
 
 # Application definition
@@ -44,11 +50,10 @@ INSTALLED_APPS = [
     'drf_yasg',
     'contact',
     'corsheaders',
+    'django_extensions',  
 ]
 
-# Защита от SQL-инъекций через параметризованные запросы
-# Django ORM по умолчанию использует параметризованные запросы,
-# но важно избегать raw SQL и особенно не доверять пользовательскому вводу
+
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
@@ -141,11 +146,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
+
 LANGUAGE_CODE = 'ru-ru'
 TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
 USE_TZ = True
+
 
 
 # Static files (CSS, JavaScript, Images)
@@ -155,11 +161,18 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-
+# Настройки для поиска статических файлов
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
+
+# Отладочная информация для статических файлов
+if DEBUG:
+    print("STATIC_ROOT:", STATIC_ROOT)
+    print("STATIC_URL:", STATIC_URL)
+    print("STATICFILES_DIRS:", STATICFILES_DIRS)
+    print("BASE_DIR:", BASE_DIR)
 
 # Media files
 MEDIA_URL = '/media/'
@@ -169,11 +182,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-SECURE_HSTS_SECONDS = 31536000  
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
 
-# Логирование SQL-запросов (только для разработки)
 if DEBUG:
     LOGGING = {
         'version': 1,

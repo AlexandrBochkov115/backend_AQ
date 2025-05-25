@@ -54,6 +54,11 @@ pip install mysqlclient
 pip install Pillow
 pip install python-dotenv
 pip install pymysql
+pip install django-extensions werkzeug
 ```
 
 Если у вас возникнут проблемы с установкой, убедитесь, что у вас установлены все необходимые системные зависимости для работы с MySQL и другими библиотеками.
+
+mkdir backend_AQ/static
+
+python manage.py collectstatic --noinput

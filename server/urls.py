@@ -5,6 +5,7 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.static import serve  # Добавляем для продакшена
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -37,5 +38,26 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
+    print("DEBUG mode is ON")
+    print("STATIC_URL:", settings.STATIC_URL)
+    print("STATIC_ROOT:", settings.STATIC_ROOT)
+    print("MEDIA_URL:", settings.MEDIA_URL)
+    print("MEDIA_ROOT:", settings.MEDIA_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+else:
+    print("DEBUG mode is OFF")
+    print("Static files should be served by web server")
+    print("STATIC_ROOT:", settings.STATIC_ROOT)
+    print("STATIC_URL:", settings.STATIC_URL)
+    print("Current urlpatterns:", urlpatterns)
+    # Добавляем обработку статических файлов даже в production для отладки
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    print("Added static files handling")
+    print("Updated urlpatterns:", urlpatterns)
+
+    # Для продакшена на Beget
+    urlpatterns += [
+        re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
+        re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    ]
