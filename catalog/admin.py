@@ -6,7 +6,7 @@ from django.forms import ModelForm
 from .models import Category, Product, ProductImage, Specification
 
 MAX_CATEGORIES = 5
-MAX_IMAGES = 8
+MAX_IMAGES = 6
 MIN_IMAGES = 3
 MAX_SPECS = 2
 

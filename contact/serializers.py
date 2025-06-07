@@ -26,3 +26,9 @@ class ContactSerializer(serializers.ModelSerializer):
         if len(digits) < 10:
             raise serializers.ValidationError("Номер телефона должен содержать минимум 10 цифр.")
         return cleaned
+        
+    def validate(self, attrs):
+        pool_name = attrs.get('pool_name')
+        if not pool_name or pool_name.strip() == '':
+            attrs['pool_name'] = 'Быстрая Связь'
+        return attrs

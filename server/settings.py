@@ -8,7 +8,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
-DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'  
+DEBUG = False
 
 
 SECURE_BROWSER_XSS_FILTER = True
@@ -29,16 +29,13 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    'aquadreams-rostov.ru',
-    'www.aquadreams-rostov.ru',
-    'aquadreams-rostov.store',
-    'www.aquadreams-rostov.store',
+    'api.aquadreams-rostov.ru',
+    'www.api.aquadreams-rostov.ru',
 ]
 
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -53,7 +50,6 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_yasg',
     'contact',
-    'corsheaders',
     'django_extensions',  
 ]
 
@@ -88,9 +84,13 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://localhost:3000",  
+    "https://localhost:3000",
+    "http://aquadreams-rostov.ru",
+    "https://aquadreams-rostov.ru"
 ]
-CORS_ALLOW_ALL_ORIGINS = False  
+
+CORS_ALLOW_ALL_ORIGINS = True  
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'server.urls'
 
@@ -120,7 +120,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv('DB_NAME'),
         'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'PASSWORD': os.getenv('DB_PSWD'),
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
         'OPTIONS': {
